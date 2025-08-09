@@ -36,7 +36,8 @@ describe('Home Page', () => {
     renderHomePage();
     const main = screen.getByRole('main');
     expect(main).toBeInTheDocument();
-    expect(main).toHaveClass('flex', 'min-h-screen', 'flex-col', 'items-center', 'justify-between', 'p-24');
+    expect(main).toHaveClass('flex', 'flex-col', 'gap-[32px]', 'row-start-2', 'items-center', 'sm:items-start');
   });
 });
+
 
