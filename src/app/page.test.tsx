@@ -20,10 +20,10 @@ describe('Home Page', () => {
     expect(nextLogo).toBeInTheDocument();
   });
 
-  it('should render main heading', () => {
+  it('should render main content with instructions', () => {
     renderHomePage();
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toBeInTheDocument();
+    const instructionText = screen.getByText(/Get started by editing/i);
+    expect(instructionText).toBeInTheDocument();
   });
 
   it('should render navigation links', () => {
@@ -39,3 +39,4 @@ describe('Home Page', () => {
     expect(main).toHaveClass('flex', 'min-h-screen', 'flex-col', 'items-center', 'justify-between', 'p-24');
   });
 });
+
