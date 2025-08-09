@@ -15,26 +15,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   pages: {
     signIn: "/sign-in",
-    signUp: "/sign-up",
     error: "/auth/error",
-    verifyRequest: "/auth/verify-request",
   },
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, token }) {
       if (session?.user) {
-        session.user.id = user.id
+        // Attach id to the session for client-side usage
+        ;(session.user as any).id = (token as any)?.uid || token?.sub || ""
       }
       return session
     },
     async jwt({ user, token }) {
       if (user) {
-        token.uid = user.id
+        // Persist the user id on the token
+        ;(token as any).uid = (user as any).id
       }
       return token
     },
   },
   session: {
-    strategy: "database",
+    // Use JWT so auth() works in middleware/edge
+    strategy: "jwt",
   },
   debug: process.env.NODE_ENV === "development",
 })
@@ -72,9 +73,9 @@ export const createAuthStrategy = (): AuthStrategy => ({
       await signIn("resend", { email, redirect: false })
       return { success: true }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : "Authentication failed" 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Authentication failed",
       }
     }
   },
@@ -82,22 +83,6 @@ export const createAuthStrategy = (): AuthStrategy => ({
     await signOut({ redirect: false })
   },
   getSession: async () => {
-    return await auth() as AuthSession | null
+    return (await auth()) as AuthSession | null
   },
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
